@@ -13,12 +13,15 @@ namespace DataAccess
         // The location will be on the {localdb} instance if available or a mdf in c:\users\{currentuser}
         public DataContext(): base("MassiveGraphTest")   
         {
-            Database.SetInitializer(new DropCreateDatabaseAlways<DataContext>());
+            Database.SetInitializer(new CreateDatabaseIfNotExists<DataContext>());
         }
-
-        // Create a composite primary key for the AdjacentNode table
+        
         protected override void OnModelCreating(DbModelBuilder builder)
         {
+            // Disable identity on the NodeID as it will be provided in the XML file.
+            builder.Entity<Node>().Property(e => e.NodeID).HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.None);
+
+            // Create a composite primary key for the AdjacentNode table
             builder.Entity<AdjacentNode>().HasKey(table => new {
                 table.NodeID,
                 table.AdjacentNodeID

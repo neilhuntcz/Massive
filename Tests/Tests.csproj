@@ -53,6 +53,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DataAccess\DataAccess.csproj">
+      <Project>{f2be92b5-15f1-4091-b63f-b49c47de5ce9}</Project>
+      <Name>DataAccess</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DataLoader\DataLoader.csproj">
       <Project>{7cf025b1-a60c-4e58-a842-a91f1f74b533}</Project>
       <Name>DataLoader</Name>
