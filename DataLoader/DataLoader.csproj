@@ -37,9 +37,13 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,6 +54,7 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XMLTools.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -59,6 +64,10 @@
     <ProjectReference Include="..\DataAccess\DataAccess.csproj">
       <Project>{f2be92b5-15f1-4091-b63f-b49c47de5ce9}</Project>
       <Name>DataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GraphService\GraphService.csproj">
+      <Project>{27156f37-950e-49dd-8faf-926037801074}</Project>
+      <Name>GraphService</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -92,6 +101,9 @@
     <Content Include="inputdata\yahoo.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

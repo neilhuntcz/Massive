@@ -11,7 +11,7 @@ namespace DataAccess
     {
         // For simplicity the database will be automatically created if it does not exist.
         // The location will be on the {localdb} instance if available or a mdf in c:\users\{currentuser}
-        public DataContext(): base("MassiveGraphTest")   
+        public DataContext(): base("DataContext")   
         {
             Database.SetInitializer(new CreateDatabaseIfNotExists<DataContext>());
         }

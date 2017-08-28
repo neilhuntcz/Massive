@@ -9,24 +9,17 @@ namespace DataAccess
 {
     public class Node
     {
+        public int NodeID { get; set; }
+        public string Label { get; set; } = "No Label";
+        // Used when resyncing, delete records with no matching file, add records with a filename
+        // not already in the table
+        public string InputFilename { get; set; } = "No file";
+        public virtual ICollection<AdjacentNode> AdjacentNodes { get; set; }
+
         public Node()
         {
             this.AdjacentNodes = new HashSet<AdjacentNode>();
         }
-
-        /*
-         <?xml version="1.0" encoding="utf-8"?>
-        <node>
-	        <id>2</id>
-	        <label>Intel</label>
-	        <adjacentNodes>
-		        <id>1</id>
-		        <id>10</id>
-		        <id>5</id>
-		        <id>9</id>
-		        <id>7</id>
-	        </adjacentNodes>
-        </node> */
 
         public static bool ValidateXML(XmlDocument nodeFromXMLFile)
         {
@@ -78,14 +71,5 @@ namespace DataAccess
                 }
             }
         }
-
-        public int NodeID { get; set; }
-        public string Label { get; set; } = "No Label";
-
-        // Used when resyncing, delete records with no matching file, add records with a filename
-        // not already in the table
-        public string InputFilename { get; set; } = "No file"; 
-
-        public virtual ICollection<AdjacentNode> AdjacentNodes { get; set; }
     }
 }

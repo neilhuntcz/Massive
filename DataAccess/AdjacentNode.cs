@@ -10,6 +10,5 @@ namespace DataAccess
     {
         public int NodeID { get; set; }
         public int AdjacentNodeID { get; set; }
-        public Node Node { get; set; }
     }
 }
