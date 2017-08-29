@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <node>
 	<id>2</id>
-	<label>Intel updated</label>
+	<label>Intel</label>
 	<adjacentNodes>
 		<id>1</id>
 		<id>10</id>

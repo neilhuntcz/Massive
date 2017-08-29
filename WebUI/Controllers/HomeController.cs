@@ -16,9 +16,14 @@ namespace WebUI.Controllers
         {
             HttpClient proxy = new HttpClient();
             byte[] data = proxy.GetByteArrayAsync("http://localhost:56481/Frontend.svc/GetAllNodes").Result;
-            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(List<GraphNode>));
+            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(List<FrontendNode>));
             MemoryStream stream = new MemoryStream(data);
-            var obj = (List<GraphNode>)ser.ReadObject(stream);
+            var obj = (List<FrontendNode>)ser.ReadObject(stream);
+
+            // set the canvas to be large enough to fit all of the nodes.
+            // scroll bars will appear if the canvas is too large for the screen
+            ViewBag.CanvasWidth = obj.Select(n => n.PosX).Max() + 100;
+            ViewBag.Canvasheight = obj.Select(n => n.PosY).Max() + 100;
 
             return View(obj);
         }

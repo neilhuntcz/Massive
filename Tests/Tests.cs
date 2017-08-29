@@ -12,6 +12,33 @@ namespace Tests
     [TestFixture]
     public class Tests
     {
+        public int[] getNodes()
+        {
+            return new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+        }
+
+        public List<Tuple<int,int>> getAdjacentNodes()
+        {
+             var list = new List<Tuple<int, int>>
+             {
+                Tuple.Create(1,2), Tuple.Create(1,3), Tuple.Create(2,1), Tuple.Create(2,5),
+                Tuple.Create(2,7), Tuple.Create(2,9), Tuple.Create(2,10), Tuple.Create(3,5),
+                Tuple.Create(5,2), Tuple.Create(5,5), Tuple.Create(5,7), Tuple.Create(5,8),
+                Tuple.Create(6,7), Tuple.Create(6,10), Tuple.Create(7,6), Tuple.Create(8,9),
+                Tuple.Create(9,10), Tuple.Create(10,9)
+             };
+
+            return list;
+        }
+
+        [TestCase (10, 5, "10, 2, 5", TestName = "Test shortest path algorithm")]
+        public void TestShortestPath(int start, int end, string expected)
+        {
+            var graph = new Graph(getNodes(), getAdjacentNodes());
+            var shortestPath = graph.ShortestPathFunction(graph, start, end);
+            Assert.That(expected, Is.EqualTo(string.Join(", ", shortestPath)));
+        }
+
         [Test]
         public void TestTest()
         {

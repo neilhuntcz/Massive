@@ -98,20 +98,35 @@ namespace DataLoader
 
         static void Main(string[] args)
         {
-            GetOne();
+            //GetOne();
             //Console.WriteLine();
             //GetAll();
 
-            Add();
-            Delete();
-            /*
-
+            //Add();
+            //Delete();
+                       
             using (DataContext objContext = new DataContext())
             {
+                var nodes = objContext.Nodes.Where(n => n.AdjacentNodes.Count > 0).Select(n => n.NodeID).ToArray();
+                var adjacentnodes = new List<Tuple<int, int>>();
+                   
+                foreach(var adj in objContext.AdjacentNodes)
+                {
+                    adjacentnodes.Add(Tuple.Create(adj.NodeID, adj.AdjacentNodeID));
+                }
+
+                var graph = new Graph(nodes, adjacentnodes);
+                var StartNode = 10;
+                var EndNode = 5
+                    ;
+                var shortestPath = graph.ShortestPathFunction(graph, StartNode, EndNode);
+
+                Console.WriteLine("shortest path to {0,2}: {1}", EndNode, string.Join(", ", shortestPath));
+
+/*
                 XmlDocument xml = new XmlDocument();
 
                 string[] xmlfiles = Directory.GetFiles(".\\inputdata", "*.xml");
-
 
                 // move to sync deletions
                 var a = objContext.Nodes.ToList();
@@ -165,8 +180,13 @@ namespace DataLoader
                 }
 
                 objContext.SaveChanges();
+                */
             }
-            */
+            
+
+
+
+            Console.ReadLine();
         }
 
         public static int TestNunitInstalled()

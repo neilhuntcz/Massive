@@ -12,24 +12,64 @@ namespace GraphService
     // NOTE: In order to launch WCF Test Client for testing this service, please select Frontend.svc or Frontend.svc.cs at the Solution Explorer and start debugging.
     public class Frontend : IFrontend
     {
-        public List<GraphNode> GetAllNodes()
+        public List<FrontendNode> GetAllNodes()
         {
-            List<GraphNode> nodes = new List<GraphNode>();
+            List<FrontendNode> nodes = new List<FrontendNode>();
+            Random r = new Random(DateTime.Now.Millisecond);
 
             using (DataContext db = new DataContext())
             {
+                int posx = 200;
+                int posy = 200;
+                int number = db.Nodes.ToList().Count();
+
+                int columns = (int)Math.Sqrt(number);
+                int rows = (int)Math.Ceiling(number / (float)columns);
+
+                int curcol = 1;
+                int currow = 1;
+
                 foreach (Node entitynode in db.Nodes.ToList())
                 {
-                    List<GraphAdjacentNode> adj = new List<GraphAdjacentNode>();
+                    if (r.Next() % 2 == 0)
+                    {
+                        posx = curcol * 200 + 33;
+                        posy = currow * 200 + 20;
+                    }
+                    else
+                    {
+                        posx = (curcol * 200) - 33;
+                        posy = (currow * 200) - 20;
+                    }
+
+                    List<FrontendAdjacentNode> adj = new List<FrontendAdjacentNode>();
 
                     foreach (AdjacentNode a in entitynode.AdjacentNodes.ToList())
                     {
-                        adj.Add(new GraphAdjacentNode { NodeID = a.NodeID, AdjacentNodeID = a.AdjacentNodeID });
+                        adj.Add(new FrontendAdjacentNode { NodeID = a.NodeID, AdjacentNodeID = a.AdjacentNodeID });
                     }
 
-                    GraphNode gnode = new GraphNode { NodeID = entitynode.NodeID, Label = entitynode.Label, AdjacentNodes = adj };
+                    FrontendNode gnode = new FrontendNode
+                    {
+                        NodeID = entitynode.NodeID,
+                        Label = entitynode.Label,
+                        PosX = posx,
+                        PosY = posy,
+                        AdjacentNodes = adj
+                    };
 
                     nodes.Add(gnode);
+
+                    if (curcol > columns)
+                    {
+                        posx = 200;
+                        currow++;
+                        curcol = 1;
+                    }
+                    else
+                    {
+                        curcol++;
+                    }
                 }
             }
 
