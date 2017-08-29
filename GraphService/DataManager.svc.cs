@@ -5,12 +5,38 @@ using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
 using DataAccess;
-using Newtonsoft.Json;
 
 namespace GraphService
 {
     public class DataManager : IDataManager
     {
+        public void AddNode(GraphNode node)
+        {
+            using (DataContext db = new DataContext())
+            {
+                var entitynode = new Node { NodeID = node.NodeID, Label = node.Label, InputFilename = node.InputFilename };
+
+                foreach (GraphAdjacentNode a in node.AdjacentNodes)
+                {
+                    entitynode.AdjacentNodes.Add(new AdjacentNode { NodeID = a.NodeID, AdjacentNodeID = a.AdjacentNodeID });
+                }
+
+                db.Nodes.Add(entitynode);
+                db.SaveChanges();
+            }
+        }
+
+        public void DeleteNode(string NodeID)
+        {
+            int nid = Convert.ToInt32(NodeID);
+
+            using (DataContext db = new DataContext())
+            {
+                db.Nodes.Remove(db.Nodes.Single(n => n.NodeID == nid));
+                db.SaveChanges();
+            }
+        }
+
         public List<GraphNode> GetAllNodes()
         {
             List<GraphNode> nodes = new List<GraphNode>();
@@ -26,12 +52,11 @@ namespace GraphService
                         adj.Add(new GraphAdjacentNode { NodeID = a.NodeID, AdjacentNodeID = a.AdjacentNodeID });
                     }
 
-                    GraphNode gnode = new GraphNode { NodeID = entitynode.NodeID, Label = entitynode.Label, AdjacentNodes = adj };
+                    GraphNode gnode = new GraphNode { NodeID = entitynode.NodeID, Label = entitynode.Label, InputFilename = entitynode.InputFilename, AdjacentNodes = adj };
 
                     nodes.Add(gnode);
                 }
             }
-
 
             return nodes;
         }
@@ -49,9 +74,7 @@ namespace GraphService
                     adj.Add(new GraphAdjacentNode { NodeID = a.NodeID, AdjacentNodeID = a.AdjacentNodeID });
                 }
 
-                GraphNode gnode = new GraphNode { NodeID = entitynode.NodeID, Label = entitynode.Label, AdjacentNodes = adj };
-
-                //return JsonConvert.SerializeObject(node);
+                GraphNode gnode = new GraphNode { NodeID = entitynode.NodeID, Label = entitynode.Label, InputFilename = entitynode.InputFilename, AdjacentNodes = adj };
                 return gnode;
             }
         }

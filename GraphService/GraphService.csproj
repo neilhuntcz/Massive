@@ -70,13 +70,20 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DataManager.svc" />
-    <Content Include="Web.config" />
+    <Content Include="Frontend.svc" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataManager.svc.cs">
       <DependentUpon>DataManager.svc</DependentUpon>
     </Compile>
+    <Compile Include="Frontend.svc.cs">
+      <DependentUpon>Frontend.svc</DependentUpon>
+    </Compile>
     <Compile Include="IDataManager.cs" />
+    <Compile Include="IFrontend.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

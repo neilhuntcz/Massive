@@ -9,25 +9,103 @@ using System.Xml;
 using System.ServiceModel;
 using GraphService;
 using System.Net;
-using Newtonsoft.Json;
+using System.Runtime.Serialization.Json;
+using System.Net.Http;
 
 namespace DataLoader
 {
     public class Program
     {
+        public static void GetOne()
+        {
+            HttpClient proxy = new HttpClient();
+            byte[] data = proxy.GetByteArrayAsync(string.Format("http://localhost:56481/DataManager.svc/GetNode/{0}", "9")).Result;
+            Stream stream = new MemoryStream(data);
+            DataContractJsonSerializer obj = new DataContractJsonSerializer(typeof(GraphNode));
+            GraphNode node = obj.ReadObject(stream) as GraphNode;
+
+            Console.WriteLine($"{node.NodeID} : {node.Label} : {node.InputFilename}");
+
+            foreach (GraphAdjacentNode gnode in node.AdjacentNodes)
+            {
+                Console.WriteLine($"{gnode.NodeID} : {gnode.AdjacentNodeID}");
+            }
+        }
+
+        public static void GetAll()
+        {
+            HttpClient proxy = new HttpClient();
+            byte[] data = proxy.GetByteArrayAsync("http://localhost:56481/DataManager.svc/GetAllNodes").Result;
+
+            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(List<GraphNode>));
+            MemoryStream stream = new MemoryStream(data);
+            var obj = (List<GraphNode>)ser.ReadObject(stream);
+
+            foreach (GraphNode node in obj)
+            {
+                Console.WriteLine($"{node.NodeID} : {node.Label} : {node.InputFilename}");
+
+                foreach (GraphAdjacentNode gnode in node.AdjacentNodes)
+                {
+                    Console.WriteLine($"{gnode.NodeID} : {gnode.AdjacentNodeID}");
+                }
+            }
+        }
+
+        public static void Delete()
+        {
+            HttpClient httpClient = new HttpClient();
+
+            // add values to data for post
+            var values = new List<KeyValuePair<string, string>>();
+            values.Add(new KeyValuePair<string, string>("", ""));
+            FormUrlEncodedContent content = new FormUrlEncodedContent(values);
+
+            // Post data
+            var result = httpClient.DeleteAsync("http://localhost:56481/DataManager.svc/DeleteNode/1").Result;
+
+            // Access content as stream which you can read into some string
+            Console.WriteLine(result.Content);
+
+            // Access the result status code
+            Console.WriteLine(result.StatusCode);
+        }
+
+        public static void Add()
+        {
+            HttpClient httpClient = new HttpClient();
+            GraphNode p = new GraphNode { NodeID = 11, Label = "TEST" };
+            p.AdjacentNodes = new List<GraphAdjacentNode>();
+
+            DataContractJsonSerializer obj = new DataContractJsonSerializer(typeof(GraphNode));
+
+            MemoryStream ms = new MemoryStream();
+            obj.WriteObject(ms, p);
+            ms.Position = 0;
+            StreamReader sr = new StreamReader(ms);
+
+            string postBody = sr.ReadToEnd();
+            sr.Close();
+            ms.Close();
+            var result = httpClient.PostAsync("http://localhost:56481/DataManager.svc/AddNode", new StringContent(postBody, Encoding.UTF8, "application/json")).Result;
+        }
+
+        private static async Task DisplayTextResult(HttpResponseMessage response)
+        {
+            string responJsonText = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(responJsonText);
+        }
+
         static void Main(string[] args)
         {
+            GetOne();
+            //Console.WriteLine();
+            //GetAll();
 
-            WebClient proxy = new WebClient();
-            string serviceURL = "http://localhost:56481/DataManager.svc/GetNode/10";
-            string data = proxy.DownloadString(serviceURL);
-
-            var n = JsonConvert.DeserializeObject<Node>(data);
-      
-            string x = "";
-
-
+            Add();
+            Delete();
             /*
+
             using (DataContext objContext = new DataContext())
             {
                 XmlDocument xml = new XmlDocument();

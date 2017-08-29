@@ -1,0 +1,68 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<!-- calc size here based on number of element-->
+@model List<GraphService.GraphNode>
+@{ var x = 100; }
+@{ var y = 100; }
+
+@{ var boxwidth = 100; }
+@{ var boxheight = 100; }
+
+
+@foreach (GraphService.GraphNode element in Model)
+{
+    boxwidth += 200;
+}
+
+<!-- store the positions in each elelemnt then loop through again this time looping through the connections and drawing lines-->
+
+<svg width="@Html.DisplayFor(m => boxwidth)px" height="200px">
+
+    @foreach (GraphService.GraphNode element in Model)
+    {
+        <g id="@Html.DisplayFor(m => element.NodeID)">
+            <circle cx="@Html.DisplayFor(m => x)" cy="100" r="60" stroke="green" stroke-width="4" fill="yellow" />
+            <text x="@Html.DisplayFor(m => x)" y="100" text-anchor="middle" stroke="#51c5cf" stroke-width="2px" dy=".3em">@Html.DisplayFor(m => element.Label)</text>
+        </g>
+
+        x += 200;
+    }
+</svg>
+@section Scripts{
+<script type="text/javascript">
+    @foreach (GraphService.GraphNode element in Model)
+    {
+        <text>
+            $("#@Html.DisplayFor(m => element.NodeID)").on("click", function ()
+            {
+                if ($("#txtNodeStart").val() != "" && $("#txtNodeEnd").val() != "") {
+                    $("#txtNodeStart").val("@Html.DisplayFor(m => element.NodeID)");
+                    $("#txtNodeEnd").val("");
+                }
+                else if ($("#txtNodeStart").val() == "")
+                {
+                    $("#txtNodeStart").val("@Html.DisplayFor(m => element.NodeID)");
+                }
+                else {
+                    $("#txtNodeEnd").val("@Html.DisplayFor(m => element.NodeID)");
+                }
+            });
+        </text>
+    }
+</script>
+}
+
+@using (Html.BeginForm("CalcRoute", "Home", FormMethod.Post))
+{<fieldset>
+        <legend>Sign Up</legend>
+        <table>
+            <tr>
+                <td>
+                    @Html.TextBox("txtNodeStart")
+                    @Html.TextBox("txtNodeEnd")
+                    <input type="submit" name="btnSubmit" value="Calculate Route" />
+                </td>
+            </tr>
+        </table>
+    </fieldset>}

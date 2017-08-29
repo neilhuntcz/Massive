@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphService", "GraphService\GraphService.csproj", "{27156F37-950E-49DD-8FAF-926037801074}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphServiceLib", "GraphServiceLib\GraphServiceLib.csproj", "{638A9809-CD4E-490B-A0E4-EE54B7FDBD42}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUI", "WebUI\WebUI.csproj", "{0BFDE8FB-0B75-4BDC-89AD-970DB622D084}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{27156F37-950E-49DD-8FAF-926037801074}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27156F37-950E-49DD-8FAF-926037801074}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27156F37-950E-49DD-8FAF-926037801074}.Release|Any CPU.Build.0 = Release|Any CPU
-		{638A9809-CD4E-490B-A0E4-EE54B7FDBD42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{638A9809-CD4E-490B-A0E4-EE54B7FDBD42}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{638A9809-CD4E-490B-A0E4-EE54B7FDBD42}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{638A9809-CD4E-490B-A0E4-EE54B7FDBD42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BFDE8FB-0B75-4BDC-89AD-970DB622D084}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BFDE8FB-0B75-4BDC-89AD-970DB622D084}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BFDE8FB-0B75-4BDC-89AD-970DB622D084}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BFDE8FB-0B75-4BDC-89AD-970DB622D084}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
