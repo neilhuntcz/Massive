@@ -12,7 +12,7 @@ namespace WebUI.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        public ActionResult Index(FormCollection collection)
         {
             HttpClient proxy = new HttpClient();
             byte[] data = proxy.GetByteArrayAsync("http://localhost:56481/Frontend.svc/GetAllNodes").Result;
@@ -25,18 +25,22 @@ namespace WebUI.Controllers
             ViewBag.CanvasWidth = obj.Select(n => n.PosX).Max() + 100;
             ViewBag.Canvasheight = obj.Select(n => n.PosY).Max() + 100;
 
+            if (collection.HasKeys())
+            {
+                ViewBag.ShortestRoute = GetRoute(collection["txtNodeStart"], collection["txtNodeEnd"]);
+            }
+
             return View(obj);
         }
 
-        public ActionResult CalcRoute(FormCollection collection)
+        public ShortestRoute GetRoute(string start, string end)
         {
-            // request node path from service
-            if (ModelState.IsValid)
-            {
-                //do something with account
-                return RedirectToAction("Index");
-            }
-            return View("SignUp");
+            //collection.Get(txtNodeStart)
+            HttpClient proxy = new HttpClient();
+            byte[] data = proxy.GetByteArrayAsync($"http://localhost:56481/DomainLogic.svc/GetShortestRoute?StartNode={start}&EndNode={end}").Result;
+            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(ShortestRoute));
+            MemoryStream stream = new MemoryStream(data);
+            return  (ShortestRoute)ser.ReadObject(stream);
         }
     }
 }

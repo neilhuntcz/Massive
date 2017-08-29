@@ -19,7 +19,7 @@ namespace GraphService
 
             using (DataContext db = new DataContext())
             {
-                int posx = 200;
+                int posx = 250;
                 int posy = 200;
                 int number = db.Nodes.ToList().Count();
 
@@ -33,12 +33,12 @@ namespace GraphService
                 {
                     if (r.Next() % 2 == 0)
                     {
-                        posx = curcol * 200 + 33;
+                        posx = curcol * 250 + 33;
                         posy = currow * 200 + 20;
                     }
                     else
                     {
-                        posx = (curcol * 200) - 33;
+                        posx = (curcol * 250) - 33;
                         posy = (currow * 200) - 20;
                     }
 
@@ -62,7 +62,7 @@ namespace GraphService
 
                     if (curcol > columns)
                     {
-                        posx = 200;
+                        posx = 250;
                         currow++;
                         curcol = 1;
                     }

@@ -1,16 +1,77 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Graph Visualization";
 }
-<!-- calc size here based on number of element-->
-@model List<GraphService.FrontendNode>
-<svg width="@(ViewBag.CanvasWidth)px" height="@(ViewBag.CanvasHeight)px">
 
-    @foreach (GraphService.FrontendNode element in Model)
-    {
-        <g id="@Html.DisplayFor(m => element.NodeID)">
-            <circle cx="@Html.DisplayFor(m => element.PosX)" cy="@Html.DisplayFor(m => element.PosY)" r="60" stroke="black" stroke-width="4" fill="white" />
-            <text x="@Html.DisplayFor(m => element.PosX)" y="@Html.DisplayFor(m => element.PosY)" text-anchor="middle" stroke="black" dy=".3em" font-family="Verdana" font-size="20">@Html.DisplayFor(m => element.Label)</text>
-        </g>
+@model List<GraphService.FrontendNode>
+<svg width="@(ViewBag.CanvasWidth)px" height="@(ViewBag.CanvasHeight)px">    
+    <!-- First loop through the nodes and draw all the connections. 
+         This is to ensure the nodes always appear on top and avoid messy 
+         looking overlaps. -->
+    
+    @{
+        string stroke = "";
+        int i = 0;
+
+        foreach (GraphService.FrontendNode element in Model)
+        {
+            foreach (GraphService.FrontendAdjacentNode adj in element.AdjacentNodes)
+            {
+                string colour = "black";
+
+                if (ViewBag.ShortestRoute != null)
+                {
+                    if (((GraphService.ShortestRoute)ViewBag.ShortestRoute).ShortestRouteNodes.Contains(adj.NodeID) &&
+                        ((GraphService.ShortestRoute)ViewBag.ShortestRoute).ShortestRouteNodes.Contains(adj.AdjacentNodeID))
+                    {
+                        colour = "red";
+                    }
+                }
+
+                if (i++ % 2 != 0)
+                {
+                    stroke = "stroke-dasharray=\"5, 5\"";
+                }
+                else
+                {
+                    stroke = "";
+                }
+
+                if (adj.AdjacentNodeID == adj.NodeID)
+                {
+            <!-- Linked to self so create a few lines looping back on themselve to the same node-->
+                    var x = Model.Single(n => n.NodeID == adj.AdjacentNodeID).PosX - 75;
+                    var y = Model.Single(n => n.NodeID == adj.AdjacentNodeID).PosY - 75;
+            <line x1="@Html.DisplayFor(m => element.PosX)" y1="@Html.DisplayFor(m => element.PosY)" x2="@Html.DisplayFor(m => x)" y2="@Html.DisplayFor(m => y)" stroke="black" stroke-width="2" z-index="-1" />
+                    var x2 = Model.Single(n => n.NodeID == adj.AdjacentNodeID).PosX + 30;
+                    var y2 = Model.Single(n => n.NodeID == adj.AdjacentNodeID).PosY - 75;
+            <line x1="@Html.DisplayFor(m => x)" y1="@Html.DisplayFor(m => y)" x2="@Html.DisplayFor(m => x2)" y2="@Html.DisplayFor(m => y2)" stroke="black" stroke-width="2" z-index="-1" />
+            <line x1="@Html.DisplayFor(m => x2)" y1="@Html.DisplayFor(m => y2)" x2="@Html.DisplayFor(m => element.PosX)" y2="@Html.DisplayFor(m => element.PosY)" stroke="black" stroke-width="2" z-index="-1" />
+                }
+                else
+                {
+                    <!-- Draw some connections with a dashed line to help visually separate them -->
+                    <line @Html.Raw(stroke) x1="@Html.DisplayFor(m => element.PosX)" y1="@Html.DisplayFor(m => element.PosY)" x2="@Html.DisplayFor(m => Model.Single(n => n.NodeID == adj.AdjacentNodeID).PosX)" y2="@Html.DisplayFor(m => Model.Single(n => n.NodeID == adj.AdjacentNodeID).PosY)" stroke="@Html.Raw(colour)" stroke-width="2" z-index="-1" />
+                }
+            }
+        }
+
+        foreach (GraphService.FrontendNode element in Model)
+        {
+            string colour = "black";
+
+            if (ViewBag.ShortestRoute != null)
+            {
+                if (((GraphService.ShortestRoute)ViewBag.ShortestRoute).ShortestRouteNodes.Contains(element.NodeID))
+                {
+                    colour = "red";
+                }
+            }
+
+            <g z-index="0" id="@Html.DisplayFor(m => element.NodeID)">
+                <circle cx="@Html.DisplayFor(m => element.PosX)" cy="@Html.DisplayFor(m => element.PosY)" r="60" stroke="@Html.Raw(colour)" stroke-width="4" fill="white" z-index="0" />    
+                <text x="@Html.DisplayFor(m => element.PosX)" y="@Html.DisplayFor(m => element.PosY)" text-anchor="middle" stroke="black" dy=".3em" font-family="Verdana" font-size="20" z-index="1">@Html.DisplayFor(m => element.Label)</text>
+            </g>
+        }
     }
 </svg>
 @section Scripts{
@@ -37,7 +98,7 @@
 </script>
 }
 
-@using (Html.BeginForm("CalcRoute", "Home", FormMethod.Post))
+@using (Html.BeginForm("Index", "Home", FormMethod.Post))
 {
 <div style="position: fixed; bottom: 20px; right: 20px;">
     <table>
