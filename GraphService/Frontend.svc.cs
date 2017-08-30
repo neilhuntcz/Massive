@@ -46,6 +46,16 @@ namespace GraphService
 
                     foreach (AdjacentNode a in entitynode.AdjacentNodes.ToList())
                     {
+                        // For display purposes we are not interested in nodes that have a 2 way
+                        // relationship. Filter so only one relationship is returned.
+                        if (entitynode.NodeID < a.AdjacentNodeID)
+                        {
+                            if (db.AdjacentNodes.Where(n => n.NodeID == a.AdjacentNodeID && n.AdjacentNodeID == entitynode.NodeID).Count() >= 1)
+                            {
+                                continue;
+                            }
+                        }
+
                         adj.Add(new FrontendAdjacentNode { NodeID = a.NodeID, AdjacentNodeID = a.AdjacentNodeID });
                     }
 

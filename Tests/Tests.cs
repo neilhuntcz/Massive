@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using System.Net;
 using DataAccess;
 using GraphService;
 using CommonLib;
@@ -13,6 +14,52 @@ namespace Tests
     [TestFixture]
     public class Tests
     {
+        const string ServiceURI = "http://localhost:56481";
+        const string InputXMLLocation = "C:\\Work\\Massive\\DataLoader\\bin\\Debug\\inputdata";
+
+        [TestCase(TestName = "Test DataManager/GetAdd - Update - Delete")]
+        public void TextDataManagerAddUpdateDelete()
+        {
+            IServiceCall service = new NodeServiceCall();
+
+            GraphNode newnode = new GraphNode();
+            newnode.Label = "TESTING";
+            newnode.NodeID = 100;
+            newnode.AdjacentNodes = new List<GraphAdjacentNode>();
+            var result = service.Add(newnode, ServiceURI);
+            Assert.That(HttpStatusCode.OK, Is.EqualTo(result.StatusCode));
+
+            result = service.Update(newnode, ServiceURI);
+            Assert.That(HttpStatusCode.OK, Is.EqualTo(result.StatusCode));
+
+            result = service.Delete(100, ServiceURI);
+            Assert.That(HttpStatusCode.OK, Is.EqualTo(result.StatusCode));
+        }
+
+        [TestCase(10, TestName = "Test DataManager/GetAll")]
+        public void TextDataManagerGetOne(int expected)
+        {
+            IServiceCall service = new NodeServiceCall();
+            List<GraphNode> g = (List<GraphNode>)service.GetAll(ServiceURI);
+            Assert.That(expected, Is.EqualTo(g.Count));
+        }
+
+        [TestCase(1, 1, TestName = "Test DataManager/GetOne")]
+        public void TextDataManagerGetOne(int NodeID, int expected)
+        {
+            IServiceCall service = new NodeServiceCall();
+            GraphNode g = (GraphNode)service.GetOne(NodeID, ServiceURI);
+            Assert.That(expected, Is.EqualTo(g.NodeID));
+        }
+
+        [TestCase(-1, null, TestName = "Test DataManager/GetOne Not Found")]
+        public void TextDataManagerGetOneException(int NodeID, int? expected)
+        {
+            IServiceCall service = new NodeServiceCall();
+            GraphNode g = (GraphNode)service.GetOne(NodeID, ServiceURI);
+            Assert.That(expected, Is.EqualTo(g));
+        }
+
         public int[] getNodes()
         {
             return new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
@@ -36,7 +83,7 @@ namespace Tests
         public void TestShortestPath(int start, int end, string expected)
         {
             var graph = new Graph(getNodes(), getAdjacentNodes());
-            var shortestPath = graph.ShortestPathFunction(graph, start, end);
+            var shortestPath = graph.CalculateShortestPath(start, end);
             Assert.That(expected, Is.EqualTo(string.Join(", ", shortestPath)));
         }
 
@@ -49,7 +96,7 @@ namespace Tests
 		                            <id>10</id>
 	                            </adjacentNodes>
                             </node>", TestName = "Test loading XML into document object")]
-        [TestCase(@"./inputdata/apple.xml", TestName = "Test loading XML file into document object")]
+        [TestCase(InputXMLLocation + "\\apple.xml", TestName = "Test loading XML file into document object")]
         public void TestLoadXML(string input)
         {
 

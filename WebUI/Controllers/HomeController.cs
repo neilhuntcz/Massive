@@ -7,6 +7,7 @@ using System.Runtime.Serialization.Json;
 using System.Web;
 using System.Web.Mvc;
 using GraphService;
+using System.Configuration;
 
 namespace WebUI.Controllers
 {
@@ -15,7 +16,7 @@ namespace WebUI.Controllers
         public ActionResult Index(FormCollection collection)
         {
             HttpClient proxy = new HttpClient();
-            byte[] data = proxy.GetByteArrayAsync("http://localhost:56481/Frontend.svc/GetAllNodes").Result;
+            byte[] data = proxy.GetByteArrayAsync($"{ConfigurationManager.AppSettings["ServiceURI"]}/Frontend.svc/GetAllNodes").Result;
             DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(List<FrontendNode>));
             MemoryStream stream = new MemoryStream(data);
             var obj = (List<FrontendNode>)ser.ReadObject(stream);
@@ -35,12 +36,19 @@ namespace WebUI.Controllers
 
         public ShortestRoute GetRoute(string start, string end)
         {
-            //collection.Get(txtNodeStart)
-            HttpClient proxy = new HttpClient();
-            byte[] data = proxy.GetByteArrayAsync($"http://localhost:56481/DomainLogic.svc/GetShortestRoute?StartNode={start}&EndNode={end}").Result;
-            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(ShortestRoute));
-            MemoryStream stream = new MemoryStream(data);
-            return  (ShortestRoute)ser.ReadObject(stream);
+            try
+            {
+                HttpClient proxy = new HttpClient();
+                byte[] data = proxy.GetByteArrayAsync($"{ConfigurationManager.AppSettings["ServiceURI"]}/DomainLogic.svc/GetShortestRoute?StartNode={start}&EndNode={end}").Result;
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(ShortestRoute));
+                MemoryStream stream = new MemoryStream(data);
+                return (ShortestRoute)ser.ReadObject(stream);
+            }
+            catch
+            {
+                ViewBag.Message = "No route found";
+                return null;
+            }
         }
     }
 }

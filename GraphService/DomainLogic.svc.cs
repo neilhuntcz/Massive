@@ -27,9 +27,7 @@ namespace GraphService
                 }
 
                 var graph = new Graph(nodes, adjacentnodes);
-                var shortestPath = graph.ShortestPathFunction(graph, int.Parse(StartNode), int.Parse(EndNode));
-                //Console.WriteLine("shortest path to {0,2}: {1}", EndNode, string.Join(", ", shortestPath));
-
+                var shortestPath = graph.CalculateShortestPath(int.Parse(StartNode), int.Parse(EndNode));
                 sr.ShortestRouteNodes = shortestPath;
             }
 

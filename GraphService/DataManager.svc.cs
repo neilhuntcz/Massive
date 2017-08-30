@@ -5,6 +5,8 @@ using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
 using DataAccess;
+using System.ServiceModel.Web;
+using System.Net;
 
 namespace GraphService
 {
@@ -81,12 +83,30 @@ namespace GraphService
             return nodes;
         }
 
+        // Return a single node based on the nodeID specified. Will fail if an invalid or nonexistant
+        // node id is supplied
         public GraphNode GetNode(string NodeID)
         {
             using (DataContext db = new DataContext())
             {
-                int nid = Convert.ToInt32(NodeID);
+                int nid = 0;
+
+                try
+                {
+                    nid = Convert.ToInt32(NodeID);
+                }
+                catch (InvalidCastException ex)
+                {
+                    throw new WebFaultException(HttpStatusCode.BadRequest);
+                }
+
                 var entitynode = db.Nodes.Single(n => n.NodeID == nid);
+
+                if (entitynode == null)
+                {
+                    throw new WebFaultException(HttpStatusCode.NotFound);
+                }
+
                 List<GraphAdjacentNode> adj = new List<GraphAdjacentNode>();
 
                 foreach(AdjacentNode a in entitynode.AdjacentNodes)
@@ -95,6 +115,7 @@ namespace GraphService
                 }
 
                 GraphNode gnode = new GraphNode { NodeID = entitynode.NodeID, Label = entitynode.Label, InputFilename = entitynode.InputFilename, AdjacentNodes = adj };
+
                 return gnode;
             }
         }

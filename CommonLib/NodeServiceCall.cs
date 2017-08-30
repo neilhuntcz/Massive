@@ -25,7 +25,7 @@ namespace CommonLib
             }
             catch
             {
-                return default(object);
+                return null;
             }
         }
 
@@ -39,19 +39,13 @@ namespace CommonLib
             return (IList)ser.ReadObject(stream);
         }
 
-        public void Delete<T>(T NodeID, string serviceURI)
+        public HttpResponseMessage Delete<T>(T NodeID, string serviceURI)
         {
             HttpClient httpClient = new HttpClient();
-            var result = httpClient.DeleteAsync(string.Format("{0}/DataManager.svc/DeleteNode/{1}", serviceURI, NodeID)).Result;
-
-            // Access content as stream which you can read into some string
-            Console.WriteLine(result.Content);
-
-            // Access the result status code
-            Console.WriteLine(result.StatusCode);
+            return httpClient.DeleteAsync(string.Format("{0}/DataManager.svc/DeleteNode/{1}", serviceURI, NodeID)).Result;
         }
 
-        public void Add<T>(T graphnode, string serviceURI)
+        public HttpResponseMessage Add<T>(T graphnode, string serviceURI)
         {
             HttpClient httpClient = new HttpClient();
             DataContractJsonSerializer obj = new DataContractJsonSerializer(typeof(GraphNode));
@@ -62,10 +56,10 @@ namespace CommonLib
             string postBody = sr.ReadToEnd();
             sr.Close();
             ms.Close();
-            var result = httpClient.PostAsync(string.Format("{0}/DataManager.svc/AddNode", serviceURI), new StringContent(postBody, Encoding.UTF8, "application/json")).Result;
+            return httpClient.PostAsync(string.Format("{0}/DataManager.svc/AddNode", serviceURI), new StringContent(postBody, Encoding.UTF8, "application/json")).Result;
         }
 
-        public void Update<T>(T graphnode, string serviceURI)
+        public HttpResponseMessage Update<T>(T graphnode, string serviceURI)
         {
             HttpClient httpClient = new HttpClient();
             DataContractJsonSerializer obj = new DataContractJsonSerializer(typeof(GraphNode));
@@ -76,7 +70,7 @@ namespace CommonLib
             string postBody = sr.ReadToEnd();
             sr.Close();
             ms.Close();
-            var result = httpClient.PutAsync(string.Format("{0}/DataManager.svc/UpdateNode", serviceURI), new StringContent(postBody, Encoding.UTF8, "application/json")).Result;
+            return httpClient.PutAsync(string.Format("{0}/DataManager.svc/UpdateNode", serviceURI), new StringContent(postBody, Encoding.UTF8, "application/json")).Result;
         }
     }
 }

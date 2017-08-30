@@ -41,20 +41,27 @@
             <!-- Linked to self so create a few lines looping back on themselve to the same node-->
                     var x = Model.Single(n => n.NodeID == adj.AdjacentNodeID).PosX - 75;
                     var y = Model.Single(n => n.NodeID == adj.AdjacentNodeID).PosY - 75;
-            <line x1="@Html.DisplayFor(m => element.PosX)" y1="@Html.DisplayFor(m => element.PosY)" x2="@Html.DisplayFor(m => x)" y2="@Html.DisplayFor(m => y)" stroke="black" stroke-width="2" z-index="-1" />
+                    <line x1="@Html.DisplayFor(m => element.PosX)" y1="@Html.DisplayFor(m => element.PosY)" x2="@Html.DisplayFor(m => x)" y2="@Html.DisplayFor(m => y)" stroke="black" stroke-width="2" z-index="-1" />
                     var x2 = Model.Single(n => n.NodeID == adj.AdjacentNodeID).PosX + 30;
                     var y2 = Model.Single(n => n.NodeID == adj.AdjacentNodeID).PosY - 75;
-            <line x1="@Html.DisplayFor(m => x)" y1="@Html.DisplayFor(m => y)" x2="@Html.DisplayFor(m => x2)" y2="@Html.DisplayFor(m => y2)" stroke="black" stroke-width="2" z-index="-1" />
-            <line x1="@Html.DisplayFor(m => x2)" y1="@Html.DisplayFor(m => y2)" x2="@Html.DisplayFor(m => element.PosX)" y2="@Html.DisplayFor(m => element.PosY)" stroke="black" stroke-width="2" z-index="-1" />
+                    <line x1="@Html.DisplayFor(m => x)" y1="@Html.DisplayFor(m => y)" x2="@Html.DisplayFor(m => x2)" y2="@Html.DisplayFor(m => y2)" stroke="black" stroke-width="2" z-index="-1" />
+                    <line x1="@Html.DisplayFor(m => x2)" y1="@Html.DisplayFor(m => y2)" x2="@Html.DisplayFor(m => element.PosX)" y2="@Html.DisplayFor(m => element.PosY)" stroke="black" stroke-width="2" z-index="-1" />
                 }
                 else
                 {
+                    // Render the connection lines off center to prevent them potentially hiding each other
+                    var x1 = element.PosX + 20;
+                    var x2 = Model.Single(n => n.NodeID == adj.AdjacentNodeID).PosX - 20;
+                    var y1 = element.PosY + 20;
+                    var y2 = Model.Single(n => n.NodeID == adj.AdjacentNodeID).PosY - 20;
+
                     <!-- Draw some connections with a dashed line to help visually separate them -->
-                    <line @Html.Raw(stroke) x1="@Html.DisplayFor(m => element.PosX)" y1="@Html.DisplayFor(m => element.PosY)" x2="@Html.DisplayFor(m => Model.Single(n => n.NodeID == adj.AdjacentNodeID).PosX)" y2="@Html.DisplayFor(m => Model.Single(n => n.NodeID == adj.AdjacentNodeID).PosY)" stroke="@Html.Raw(colour)" stroke-width="2" z-index="-1" />
+                    <line @Html.Raw(stroke) x1="@Html.DisplayFor(m => x1)" y1="@Html.DisplayFor(m => y1)" x2="@Html.DisplayFor(m => x2)" y2="@Html.DisplayFor(m => y2)" stroke="@Html.Raw(colour)" stroke-width="2" z-index="-1" />
                 }
             }
         }
 
+        // Draw the nodes, they will be highlighted in red if they are part of the shortest path
         foreach (GraphService.FrontendNode element in Model)
         {
             string colour = "black";
@@ -74,10 +81,14 @@
         }
     }
 </svg>
+
+<!-- Output the Javascript to allow each node to be clicked to be select to be part
+     of a shortest route calculation.
+    -->
 @section Scripts{
 <script type="text/javascript">
     @foreach (GraphService.FrontendNode element in Model)
-    {
+    {        
         <text>
             $("#@Html.DisplayFor(m => element.NodeID)").on("click", function ()
             {
@@ -104,8 +115,14 @@
     <table>
         <tr>
             <td>
-                @Html.TextBox("txtNodeStart")
-                @Html.TextBox("txtNodeEnd")
+                <div style="color:red">@(ViewBag.Message)</div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+
+                Start Node @Html.TextBox("txtNodeStart", null, new { @readonly = "readonly", style = "width:50px" })
+                End Node @Html.TextBox("txtNodeEnd", null, new { @readonly = "readonly", style = "width:50px" })
                 <input type="submit" name="btnSubmit" value="Calculate Shortest Route" />
             </td>
         </tr>

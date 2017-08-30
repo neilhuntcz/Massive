@@ -25,11 +25,9 @@ namespace DataLoader
             IServiceCall service = new NodeServiceCall();
             XMLTool xmltool = new NodeXMLTool();
 
-            List<GraphNode> a = (List<GraphNode>)service.GetAll(serviceuri);
-
             // First check for any removed XML files. If a file exists in the database but not the
             // filesytem, delete it from the database.
-            foreach (GraphNode n in a)
+            foreach (GraphNode n in (List<GraphNode>)service.GetAll(serviceuri))
             {
                 if (xmlfiles.Where(d => Path.GetFileName(d) == n.InputFilename).Count() == 0)
                 {

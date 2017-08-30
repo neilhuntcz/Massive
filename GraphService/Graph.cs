@@ -8,6 +8,7 @@ namespace GraphService
 {
     public class Graph
     {
+        // Build up the dictionary with the relationships between nodes and their connections
         public Graph(int[] nodes, List<Tuple<int, int>> adjacentnodes)
         {
             foreach (var node in nodes)
@@ -37,17 +38,18 @@ namespace GraphService
             }
         }
 
-        public List<int> ShortestPathFunction(Graph graph, int startnode, int endnode)
+        public List<int> CalculateShortestPath(int startnode, int endnode)
         {
             var previous = new Dictionary<int, int>();
 
             var queue = new Queue<int>();
             queue.Enqueue(startnode);
 
+            // Build a dictionary of the nodes reachable from the starting node
             while (queue.Count > 0)
             {
                 var node = queue.Dequeue();
-                foreach (var adjacentnode in graph.AdjacencyList[node])
+                foreach (var adjacentnode in AdjacencyList[node])
                 {
                     if (previous.ContainsKey(adjacentnode))
                         continue;
@@ -57,6 +59,7 @@ namespace GraphService
                 }
             }
 
+            // Find the route from the start node to the end node
             var path = new List<int>();
             var current = endnode;
             while (!current.Equals(startnode))

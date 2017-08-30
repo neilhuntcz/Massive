@@ -13,7 +13,7 @@ namespace DataAccess
         // The location will be on the {localdb} instance if available or a mdf in c:\users\{currentuser}
         public DataContext(): base("DataContext")   
         {
-            Database.SetInitializer<DataContext>(new DropCreateDatabaseAlways<DataContext>());
+            Database.SetInitializer<DataContext>(new CreateDatabaseIfNotExists<DataContext>());
         }
         
         protected override void OnModelCreating(DbModelBuilder builder)

@@ -8,12 +8,7 @@ using System.Text;
 
 namespace GraphService
 {
-    [DataContract]
-    public class ShortestRoute
-    {
-        [DataMember]
-        public List<int> ShortestRouteNodes { get; set; }
-    }
+    // REST methods used when calculating the shortest route between 2 nodes
 
     [ServiceContract]
     public interface IDomainLogic
