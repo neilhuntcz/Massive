@@ -13,7 +13,7 @@ namespace DataAccess
         // The location will be on the {localdb} instance if available or a mdf in c:\users\{currentuser}
         public DataContext(): base("DataContext")   
         {
-            Database.SetInitializer(new CreateDatabaseIfNotExists<DataContext>());
+            Database.SetInitializer<DataContext>(new DropCreateDatabaseAlways<DataContext>());
         }
         
         protected override void OnModelCreating(DbModelBuilder builder)
@@ -27,6 +27,7 @@ namespace DataAccess
                 table.AdjacentNodeID
             });
         }
+
         public virtual DbSet<Node> Nodes { get; set; }
         public virtual DbSet<AdjacentNode> AdjacentNodes { get; set; }
     }

@@ -10,6 +10,26 @@ namespace GraphService
 {
     public class DataManager : IDataManager
     {
+        public void UpdateNode(GraphNode node)
+        {
+            using (DataContext db = new DataContext())
+            {
+                Node un = db.Nodes.Single(d => d.NodeID == node.NodeID);
+                db.AdjacentNodes.RemoveRange(un.AdjacentNodes);
+
+                foreach (GraphAdjacentNode a in node.AdjacentNodes)
+                {
+                    un.AdjacentNodes.Add(new AdjacentNode { NodeID = a.NodeID, AdjacentNodeID = a.AdjacentNodeID });
+                }
+
+                un.Label = node.Label;
+                un.InputFilename = node.InputFilename;
+                un.NodeID = node.NodeID;
+
+                db.SaveChanges();
+            }
+        }
+
         public void AddNode(GraphNode node)
         {
             using (DataContext db = new DataContext())

@@ -64,5 +64,13 @@ namespace GraphService
                     RequestFormat = WebMessageFormat.Json,
                     ResponseFormat = WebMessageFormat.Json)]
         void AddNode(GraphNode node);
+
+        [OperationContract]
+        [WebInvoke(Method = "PUT",
+                    UriTemplate = "UpdateNode",
+                    BodyStyle = WebMessageBodyStyle.Bare,
+                    RequestFormat = WebMessageFormat.Json,
+                    ResponseFormat = WebMessageFormat.Json)]
+        void UpdateNode(GraphNode node);
     }
 }

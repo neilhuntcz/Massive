@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.IO;
 
-namespace DataLoader
+namespace CommonLib
 {
-    // This will be moved when refactored
-    public static class XMLTools
+    public abstract class XMLTool
     {
-        public static XmlDocument LoadXML(string input)
+        public abstract bool ValidateXML(XmlDocument input);
+        public abstract object CreateGraphNodeFromXML(XmlDocument nodeFromXMLFile);
+
+        public XmlDocument LoadXML(string input)
         {
             XmlDocument xml = new XmlDocument();
 

@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphService", "GraphServic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUI", "WebUI\WebUI.csproj", "{0BFDE8FB-0B75-4BDC-89AD-970DB622D084}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonLib", "CommonLib\CommonLib.csproj", "{37B6DF49-5433-4561-B53B-9A1A91D9FFF1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{0BFDE8FB-0B75-4BDC-89AD-970DB622D084}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0BFDE8FB-0B75-4BDC-89AD-970DB622D084}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0BFDE8FB-0B75-4BDC-89AD-970DB622D084}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37B6DF49-5433-4561-B53B-9A1A91D9FFF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37B6DF49-5433-4561-B53B-9A1A91D9FFF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37B6DF49-5433-4561-B53B-9A1A91D9FFF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37B6DF49-5433-4561-B53B-9A1A91D9FFF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

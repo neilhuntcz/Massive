@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using DataLoader;
 using DataAccess;
+using GraphService;
+using CommonLib;
 
 namespace Tests
 {
@@ -39,12 +40,6 @@ namespace Tests
             Assert.That(expected, Is.EqualTo(string.Join(", ", shortestPath)));
         }
 
-        [Test]
-        public void TestTest()
-        {
-            Assert.AreEqual(1, Program.TestNunitInstalled());
-        }
-
         [TestCase(@"<?xml version='1.0' encoding='utf-8'?>
                             <node>
 	                            <id>2</id>
@@ -57,8 +52,9 @@ namespace Tests
         [TestCase(@"./inputdata/apple.xml", TestName = "Test loading XML file into document object")]
         public void TestLoadXML(string input)
         {
+
             var xml = new System.Xml.XmlDocument();
-            xml = XMLTools.LoadXML(input);
+            xml = new NodeXMLTool().LoadXML(input);
             Assert.That(new System.Xml.XmlDocument().GetType(), Is.EqualTo(xml.GetType()));
         }
 
@@ -66,7 +62,7 @@ namespace Tests
         public void TestLoadBadXML(string input)
         {
             var xml = new System.Xml.XmlDocument();
-            xml = XMLTools.LoadXML(input);
+            xml = new NodeXMLTool().LoadXML(input);
 
             Assert.That(null, Is.EqualTo(xml));
         }
@@ -101,15 +97,14 @@ namespace Tests
                             <node>
 	                            <id>2</id>
                                 <label>Intel</label>
-	                            <adjacentNodes>
-	                            </adjacentNodes>
-                            </node>", false, TestName = "Test invalid XML missing adjacent nodes")]
+	                            <adjacentNodes />
+                            </node>", true, TestName = "Test valid XML with no adjacent nodes")]
 
         public void TestXMLStructure(string input, bool expected)
         {
             var xml = new System.Xml.XmlDocument();
             xml.LoadXml(input);
-            bool IsValid = Node.ValidateXML(xml);
+            bool IsValid = new NodeXMLTool().ValidateXML(xml);
             Assert.That(expected, Is.EqualTo(IsValid));
         }
 
@@ -126,7 +121,7 @@ namespace Tests
         {
             var xml = new System.Xml.XmlDocument();
             xml.LoadXml(input);
-            Node NewNode = new Node(xml);
+            GraphNode NewNode = (GraphNode)new NodeXMLTool().CreateGraphNodeFromXML(xml);
 
             Assert.That(2, Is.EqualTo(NewNode.NodeID));
             Assert.That("Intel", Is.EqualTo(NewNode.Label));
